@@ -44,11 +44,16 @@ void send_notification(const std::string& API_KEY, const std::string& title, con
 
 // Function to check the battery status
 void check_battery_status(const std::string& API_KEY){
-    std::ifstream battery_file("/sys/class/power_supply/BAT0/capacity");
-    int battery_level;
-    if(battery_file >> battery_level && battery_level < 20){
-        send_notification(API_KEY,  "Low Battery Alert", "Your laptop battery is low. Please plug in the charger.");
+    std::ifstream charger_file("/sys/class/power_supply/AC/online");
+    int charger_status;
+    if (charger_file >> charger_status && charger_status == 0){
+         std::ifstream battery_file("/sys/class/power_supply/BAT0/capacity");
+        int battery_level;
+        if(battery_file >> battery_level && battery_level < 20){
+            send_notification(API_KEY,  "Low Battery Alert", "Your laptop battery is low. Please plug in the charger.");
+        }
     }
+   
     
 
 }
